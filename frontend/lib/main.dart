@@ -16,11 +16,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const CustomerListScreen(),
+      home: const CustomerListScreen(), // Main screen of the app
     );
   }
 }
 
+// Model class to represent a customer
 class Customer {
   final int id;
   final String name;
@@ -44,6 +45,7 @@ class Customer {
   }
 }
 
+// Main screen that displays the list of customers
 class CustomerListScreen extends StatefulWidget {
   const CustomerListScreen({super.key});
 
@@ -72,6 +74,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     super.dispose();
   }
 
+  // Function to filter customers based on search input
   void _filterCustomers() {
     final query = searchController.text.toLowerCase();
     setState(() {
@@ -85,14 +88,15 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     });
   }
 
-  // Fetch all customers from backend
+  // Fetch all customers from the backend API
   Future<void> fetchCustomers() async {
     setState(() {
       isLoading = true;
     });
 
     try {
-      final response = await http.get(Uri.parse('$baseUrl/customers'));
+      // Send GET request
+      final response = await http.get(Uri.parse('$baseUrl/customers')); 
       
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -119,6 +123,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   // Delete a customer
   Future<void> deleteCustomer(int id) async {
     try {
+      // Send DELETE request
       final response = await http.delete(Uri.parse('$baseUrl/customers/$id'));
       
       if (response.statusCode == 200) {
@@ -146,7 +151,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     final emailController = TextEditingController();
 
     showDialog(
-      // Labels and hint text for the input fields
+      // input fields
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -204,7 +209,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                   return;
                 }
                 
-                // Validate name doesn't contain numbers
+                // Validate name only has the name
                 if (name.contains(RegExp(r'[0-9]'))) {
                   showSnackBar('Name cannot contain numbers');
                   return;
@@ -217,7 +222,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                   return;
                 }
                 
-                // Validate email contains @
+                // Validate email contains atleast an @
                 if (!email.contains('@')) {
                   showSnackBar('Email must contain @ symbol');
                   return;
