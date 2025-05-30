@@ -1,4 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -15,6 +18,9 @@ class MyApp extends StatelessWidget {
       title: 'Customer Management',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        primaryColor: const Color(0xFF2196F3),
+        scaffoldBackgroundColor: const Color(0xFFF5F7FA),  
+        fontFamily: 'Roboto',
       ),
       home: const CustomerListScreen(), // Main screen of the app
     );
@@ -162,7 +168,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
               TextField(
                 controller: nameController,
                 decoration: const InputDecoration(
-                  labelText: 'Name',
+                  labelText: 'Full Name',
                   border: OutlineInputBorder(),
                   hintText: 'Enter customer name',
                 ),
@@ -170,12 +176,12 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
               const SizedBox(height: 10),
               TextField(
                 controller: ageController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 decoration: const InputDecoration(
                   labelText: 'Age',
                   border: OutlineInputBorder(),
-                  hintText: 'Enter age (1-120)',
                 ),
-                keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 10),
               TextField(
@@ -264,137 +270,351 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
-        title: const Text('Customer Management System'),
+        elevation: 0,
+        backgroundColor: const Color(0xFF2196F3),
+        title: const Text(
+          'Customer Management System',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: ElevatedButton.icon(
               onPressed: showAddCustomerDialog,
-              icon: const Icon(Icons.add, color: Colors.white),
+              icon: const Icon(Icons.person_add, color: Colors.white),
               label: const Text(
                 'Add Customer',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(
+                  color: Colors.white, 
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                backgroundColor: const Color(0xFF4CAF50),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                elevation: 3,
               ),
             ),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Search Bar
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                hintText: 'Search by customer name...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+           body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF2196F3),
+              Color(0xFFF5F7FA),
+            ],
+            stops: [0.0, 0.3],
+          ),
+        ),
+        child: Column(
+          children: [
+            // Search Bar
+            Container(
+              margin: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search by customer name...',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: Color(0xFF2196F3),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 ),
-                filled: true,
-                fillColor: Colors.grey[100],
               ),
             ),
-          ),
-          // Customer List
-          Expanded(
-            child: isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : filteredCustomers.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.people_outline, size: 64, color: Colors.grey),
-                            const SizedBox(height: 16),
-                            Text(
-                              searchController.text.isEmpty
-                                  ? 'No customers yet'
-                                  : 'No customers found matching "${searchController.text}"',
-                              style: const TextStyle(fontSize: 18, color: Colors.grey),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              searchController.text.isEmpty
-                                  ? 'Add your first customer!'
-                                  : 'Try a different search term',
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      )
-                    : RefreshIndicator(
-                        onRefresh: fetchCustomers,
-                        child: ListView.builder(
-                          itemCount: filteredCustomers.length,
-                          itemBuilder: (context, index) {
-                            final customer = filteredCustomers[index];
-                            return Card(
-                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              elevation: 2,
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: Colors.blue,
-                                  child: Text(
-                                    customer.name[0].toUpperCase(),
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                title: Text(
-                                  customer.name,
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Age: ${customer.age}'),
-                                    Text('Email: ${customer.email}'),
+            // Customer List
+            Expanded(
+              child: isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2196F3)),
+                      ),
+                    )
+                  : filteredCustomers.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.9),
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 10),
+                                    ),
                                   ],
                                 ),
-                                isThreeLine: true,
-                                trailing: IconButton(
-                                  icon: const Icon(Icons.delete, color: Colors.red),
-                                  onPressed: () {
-                                    // Show confirmation dialog
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text('Delete Customer'),
-                                          content: Text('Are you sure you want to delete ${customer.name}?'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: const Text('Cancel'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                                deleteCustomer(customer.id);
-                                              },
-                                              child: const Text('Delete', style: TextStyle(color: Colors.red)),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
+                                child: const Icon(
+                                  Icons.people_outline, 
+                                  size: 80, 
+                                  color: Color(0xFF2196F3),
                                 ),
                               ),
-                            );
-                          },
+                              const SizedBox(height: 24),
+                              Text(
+                                searchController.text.isEmpty
+                                    ? 'No customers yet'
+                                    : 'No customers found matching "${searchController.text}"',
+                                style: const TextStyle(
+                                  fontSize: 22, 
+                                  color: Color(0xFF37474F),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                searchController.text.isEmpty
+                                    ? 'Add your first customer!'
+                                    : 'Try a different search term',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : RefreshIndicator(
+                          color: const Color(0xFF2196F3),
+                          onRefresh: fetchCustomers,
+                          child: ListView.builder(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            itemCount: filteredCustomers.length,
+                            itemBuilder: (context, index) {
+                              final customer = filteredCustomers[index];
+                              return Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.white,
+                                      Colors.blue.shade50,
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.08),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(16),
+                                    onTap: () {},
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 56,
+                                            height: 56,
+                                            decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                colors: [
+                                                  Color(0xFF2196F3),
+                                                  Color(0xFF1976D2),
+                                                ],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                              ),
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: const Color(0xFF2196F3).withOpacity(0.3),
+                                                  blurRadius: 8,
+                                                  offset: const Offset(0, 4),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                customer.name[0].toUpperCase(),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  customer.name,
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Color(0xFF37474F),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.cake,
+                                                      size: 16,
+                                                      color: Colors.grey[600],
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      '${customer.age} years',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.grey[700],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 2),
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.email,
+                                                      size: 16,
+                                                      color: Colors.grey[600],
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Expanded(
+                                                      child: Text(
+                                                        customer.email,
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors.grey[700],
+                                                        ),
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.red.shade50,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: IconButton(
+                                              icon: const Icon(
+                                                Icons.delete_outline,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                // Show confirmation dialog
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    return AlertDialog(
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(16),
+                                                      ),
+                                                      title: const Text(
+                                                        'Delete Customer',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      content: Text(
+                                                        'Are you sure you want to delete ${customer.name}?',
+                                                        style: const TextStyle(fontSize: 16),
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(context).pop();
+                                                          },
+                                                          child: Text(
+                                                            'Cancel',
+                                                            style: TextStyle(
+                                                              color: Colors.grey[600],
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.of(context).pop();
+                                                            deleteCustomer(customer.id);
+                                                          },
+                                                          style: ElevatedButton.styleFrom(
+                                                            backgroundColor: Colors.red,
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(8),
+                                                            ),
+                                                          ),
+                                                          child: const Text(
+                                                            'Delete',
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
