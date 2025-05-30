@@ -7,22 +7,22 @@ A simple full-stack customer management application built with Flutter (frontend
 ✅ Requirements Checklist
 Core Features
 
-[x] Display a list of customers read from the database
-[x] Allow users to create new customers
-[x] Allow users to delete customers
-[x] Each customer must have:
-- [x] Name
-- [x] Age
-- [x] Email address
+- [x] Display a list of customers read from the database
+- [x] Allow users to create new customers
+- [x] Allow users to delete customers
+- [x] Each customer must have:
+-    [x] Name
+-    [x] Age
+-    [x] Email address
 
 Bonus Features 
 
-[x] Use asynchronous operations where possible
-[x] Add comments to your code for clarity
-[x] Generate test data if the database is empty (ideally simulate 10,000+ records)
-[x] Make the interface visually appealing
-[x] Add any other creative features or flare
-[x] Host the code in a Git repository and share the link
+- [x] Use asynchronous operations where possible
+- [x] Add comments to your code for clarity
+- [x] Generate test data if the database is empty (ideally simulate 10,000+ records)
+- [x] Make the interface visually appealing
+- [x] Add any other creative features or flare
+- [x] Host the code in a Git repository and share the link
 
 You're reading this on GitHub!
 ## 📋 Requirements
