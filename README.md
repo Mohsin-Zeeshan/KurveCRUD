@@ -19,9 +19,9 @@ Bonus Features
 
 - [x] Use asynchronous operations where possible
 - [x] Add comments to your code for clarity
-- [x] Generate test data if the database is empty (ideally simulate 10,000+ records)
+- [x] Generate test data if the database is empty (Only 5)
 - [x] Make the interface visually appealing
-- [x] Add any other creative features or flare
+- [x] Add any other creative features or flare (Search Bar)
 - [x] Host the code in a Git repository and share the link
 
 You're reading this on GitHub!
@@ -144,18 +144,18 @@ customer-management-system/
 - **Flask**
 - **Flutter**
 
-1.	What was Familiar 
-    Coming into this project, I already had some previous experience working with Flutter for frontend development. I was comfortable building the UI on the client side. I also had experience with Python, though it had previously been used for data analysis, scripting, and backend logic in a non-web context. 
+1.	# *What was Familiar* 
+   - Coming into this project, I already had some previous experience working with Flutter for frontend development. I was comfortable building the UI on the client side. I also had experience with Python, though it had previously been used for data analysis, scripting, and backend logic in a non-web context. 
 
-2.	What Was New
-    This project introduced me to Flask as a lightweight Python web framework. It was my first time building an API using Flask, so I was still exploring while constructing the app. Another major learning curve was understanding how to connect the Flutter frontend to this new Flask backend, especially when it came to making successful API requests across different localhosts. Integrating an SQLite database with Flask was new, particularly understanding how to read, write, and manage data. 
+2.	# *What Was New*
+   - This project introduced me to Flask as a lightweight Python web framework. It was my first time building an API using Flask, so I was still exploring while constructing the app. Another major learning curve was understanding how to connect the Flutter frontend to this new Flask backend, especially when it came to making successful API requests across different localhosts. Integrating an SQLite database with Flask was new, particularly understanding how to read, write, and manage data. 
 
-3.	What I Learned
-    This project significantly boosted my understanding of full-stack development. I learned 
-    -	How Flask handles web requests, 
-    -	How to configure and resolve CORS issues between the backend and frontend 
-    -	How to connect the application to a database using SQLite.
-    Another problem I encountered and resolved real-world challenges like the localhost vs 10.0.2.2 issue when running an emulator, which helped me develop better debugging skills. Most importantly, it set the foundation for me to solidify my understanding of how to bridge the gap between frontend and backend systems. This hands-on experience gave me the confidence to manage a complete full-stack workflow.
+3.	# *What I Learned*
+   - This project significantly boosted my understanding of full-stack development. I learned 
+       -	How Flask handles web requests, 
+       -	How to configure and resolve CORS issues between the backend and frontend 
+       -	How to connect the application to a database using SQLite.
+       Another problem I encountered and resolved real-world challenges like the localhost vs 10.0.2.2 issue when running an emulator, which helped me develop better debugging skills. Most importantly, it set the foundation for me to solidify my understanding of how to bridge the gap between frontend and backend systems. This hands-on experience gave me the confidence to manage a complete full-stack workflow.
 
 
 ## 👤 Author
