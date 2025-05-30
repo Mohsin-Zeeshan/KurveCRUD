@@ -13,11 +13,9 @@ CORS(app)  # Enable CORS for Flutter frontend
 # Database file path
 DB_PATH = 'customers.db'
 
-
 # ============================
 # Database Setup
 # ============================
-
 def init_db():
     """Create the customers table if it doesn't exist"""
     conn = sqlite3.connect(DB_PATH)
@@ -33,12 +31,12 @@ def init_db():
         )
     ''')
     
-    # Check if table is empty and add some sample data if so 
+    # Check if table is empty and add some sample data
     cursor.execute('SELECT COUNT(*) FROM customers')
     count = cursor.fetchone()[0]
     
     if count == 0:
-        
+        # Add some sample customers
         sample_customers = [
             ('Conor McGregor', 25, 'conor@gmail.com'),
             ('Khabib Nurmagomedov', 30, 'khabib@outlook.com'),
@@ -57,7 +55,7 @@ def init_db():
 
 @app.route('/api/customers', methods=['GET'])
 def get_customers():
-    """Get all customers from the database"""
+    """Get all customers from database"""
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
@@ -98,8 +96,7 @@ def create_customer():
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         
-        # Insert the new customer into the database
-
+         # Insert the new customer into the database
         cursor.execute('''
             INSERT INTO customers (name, age, email) 
             VALUES (?, ?, ?)
@@ -108,7 +105,7 @@ def create_customer():
         conn.commit()
         customer_id = cursor.lastrowid
         conn.close()
-        
+
         # Return the new customer
         return jsonify({
             'id': customer_id,
@@ -152,7 +149,7 @@ def delete_customer(customer_id):
 
 @app.route('/api/customers/<int:customer_id>', methods=['PUT'])
 def update_customer(customer_id):
-    """Update a customer's data"""
+    """Update a customer (bonus feature)"""
     try:
         data = request.json
         
@@ -173,7 +170,7 @@ def update_customer(customer_id):
             update_fields.append('email = ?')
             values.append(data['email'])
         
-        # If no fields were provided, return error        
+        # If no fields were provided, return error
         if not update_fields:
             return jsonify({'error': 'No fields to update'}), 400
         
@@ -199,4 +196,6 @@ if __name__ == '__main__':
     # Initialize database on startup
     init_db()
     
-    
+    # Run Flask app in debug mode
+    print("Starting Flask server on http://localhost:5000")
+    app.run(debug=True, port=5000)
