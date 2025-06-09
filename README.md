@@ -1,4 +1,4 @@
-# Kurve CRUF
+# Kurve CRUD
 
 A simple full-stack customer management application built with Flutter (frontend) and Python Flask (backend) for the Kurve Full Stack Intern Programming Task.
 
